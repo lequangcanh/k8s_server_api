@@ -16,7 +16,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: k8s_server_api_test
+  database: k8s_demo_test
 
 production:
   <<: *default
