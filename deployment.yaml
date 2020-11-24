@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: k8s-server-api
+  name: k8s-server-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: k8s-server-api
+  template:
+    metadata:
+      labels:
+        app: k8s-server-api
+    spec:
+      containers:
+        - env:
+            - name: DATABASE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_HOST
+                  name: app-configmap
+            - name: DATABASE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_NAME
+                  name: app-configmap
+            - name: DATABASE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_USERNAME
+                  name: app-configmap
+            - name: DATABASE_PASSWORD
+              valueFrom: # Sử dụng secret
+                secretKeyRef:
+                  key: DATABASE_PASSWORD
+                  name: app-secret
+          image: lequangcanh/k8s_server_api:0.0.1
+          name: k8s-server-api
+          ports:
+            - containerPort: 3000
+          resources: {}
+          stdin: true
+          tty: true
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: k8s-server-api
+  name: k8s-server-api
+spec:
+  type: LoadBalancer
+  ports:
+    - name: "3000"
+      port: 3000
+      targetPort: 3000
+  selector:
+    app: k8s-server-api
