@@ -52,10 +52,10 @@ metadata:
     app: k8s-server-api
   name: k8s-server-api
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
     - name: "3000"
-      port: 3000
+      port: 80
       targetPort: 3000
   selector:
     app: k8s-server-api
